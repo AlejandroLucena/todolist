@@ -1,0 +1,7 @@
+FROM nginx:stable-alpine
+
+COPY ./docker/nginx.conf /etc/nginx/
+
+COPY ../apps/laravel/ /var/www/html/
+
+EXPOSE 80

@@ -1,0 +1,26 @@
+FROM php:8.2-rc-fpm-buster AS php-base
+
+COPY ../../docker/fpm-pool.conf /usr/local/etc/php-fpm.d/zzz_custom_fpm_pool.conf
+COPY ../../docker/php/php.ini /usr/local/etc/php/conf.d/zzz_custom_php.ini
+
+RUN apt-get update && apt-get install git libicu-dev libzip-dev libgmp-dev unzip libxml2-dev --no-install-recommends -y \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install mysqli pdo pdo_mysql zip xml bcmath gmp \
+    && docker-php-ext-enable pdo_mysql \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
+    && pecl install -f redis \
+    && pecl install pcov && docker-php-ext-enable pcov \
+    && docker-php-ext-enable redis \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && mv /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
+    && chmod 777 /usr/local/etc/php
+
+RUN echo $PATH
+RUN export PATH="~/.config/composer/vendor/bin:$PATH"; echo $PATH
+RUN echo $PATH
+
+COPY --chown=www-data:www-data ../apps/laravel/ /var/www/html/
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && composer install

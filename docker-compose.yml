@@ -1,0 +1,50 @@
+version: '3.9'
+services:
+    php:
+        container_name: php
+        build:
+            context: ./
+            dockerfile: ./docker/Dockerfile-fpm
+        env_file: ./apps/laravel/.env
+        ports:
+            - '9000:9000'
+        volumes:
+            - 'phpsocket:/var/run'
+            - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+            - ./docker/php/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+        environment:
+            INSTALL_XDEBUG: "true"
+    nginx:
+        container_name: nginx
+        build:
+            context: ./
+            dockerfile: ./docker/Dockerfile-nginx
+        ports:
+            - '80:80'
+        depends_on:
+            - php
+        volumes:
+            - 'phpsocket:/var/run'
+
+    mysql:
+        container_name: mysql
+        image: 'mariadb:latest'
+        volumes:
+            - './docker/mysql:/var/lib/mysql'
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=laravel_db
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=root
+        ports:
+            - '3306:3306'
+        restart: always                       
+    sqlite:
+        container_name: sqlite
+        image: 'nouchka/sqlite3:latest'
+        stdin_open: true
+        tty: true
+        volumes:
+            - './docker/sqlite3/:/root/db/'
+volumes:
+    phpsocket: null
