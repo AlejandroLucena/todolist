@@ -153,7 +153,7 @@ NOTE: https://laravel-news.com/automating-your-openapi-documentation
 Postman collection in
 
 ```
-~/postman/clinic_cloud.postman_collection.json
+~/postman/service.postman_collection.json
 ```
 
 I have implemented JWT for Auth requests. So we need to follow this flow.
@@ -181,5 +181,10 @@ to static analysis in PHP https://github.com/nunomaduro/larastan
 ```
 $ make phpstan
 ```
+To run PEST Testing
+```
+$ make pest <TEST_CLASS={File Name inside /tests}>
+```
+
 [NOTE: I didn't invest time to fix the issues that appear maybe when I join the team ? ;) ]
 
