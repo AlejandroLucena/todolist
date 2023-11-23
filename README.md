@@ -1,4 +1,4 @@
-# Clinic Cloud Technical test
+# Technical test
 
 # Part 1: PHP and Laravel
 
