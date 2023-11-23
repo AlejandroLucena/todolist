@@ -1,4 +1,5 @@
 PHP_CONTAINER_NAME=php
+TEST_CLASS ?= .
 
 .PHONY: up
 up:
@@ -29,6 +30,10 @@ restart_php: config_cache
 .PHONY: test
 test: restart_php
 	docker exec -it $(PHP_CONTAINER_NAME) bash -c 'php ./vendor/bin/phpunit --no-coverage --stop-on-error --stop-on-failure --testsuite Unit'
+
+.PHONY: pest
+pest:
+	docker exec -it $(PHP_CONTAINER_NAME) bash -c 'php ./vendor/bin/pest --filter=$(TEST_CLASS)'
 
 .PHONY: pint
 pint:
