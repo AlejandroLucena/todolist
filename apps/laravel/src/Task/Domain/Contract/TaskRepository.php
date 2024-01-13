@@ -9,7 +9,7 @@ use Modules\Task\Domain\Task;
 
 interface TaskRepository
 {
-    public function save(Task $task): void;
+    public function save(Task $task): array;
 
     public function update(Task $task): void;
 

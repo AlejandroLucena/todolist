@@ -25,7 +25,7 @@ final class EloquentTaskRepository implements TaskRepository
     ) {
     }
 
-    public function save(Task $task): void
+    public function save(Task $task): array
     {
         try {
             Cache::forget('tasks_all');
@@ -41,6 +41,8 @@ final class EloquentTaskRepository implements TaskRepository
             Cache::rememberForever('tasks_all', function () {
                 return $this->eloquentTaskModel->all();
             });
+
+            return TaskResource::make($eloquentTask)->resolve();
         } catch (Exception $e) {
             throw new BadRequestException($e->getMessage());
         }
